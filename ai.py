@@ -1,8 +1,13 @@
 import random
 
+"""
+Класс AI, формирующий при создании множество координат кораблей, случайным образом 
+размещенных на игровом поле.
+"""
+
 class AI:
     def __init__(self):
-        self.graph = {
+        self.graph = {  # Базовые наборы координат кораблей и зон отчуждения вокруг них
             '4-1': [(-1, 0, 1), (0, 0, 0), (1, 0, 0), (2, 0, 0), (3, 0, 0), (4, 0, 1),
                     (-1, -1, 1), (0, -1, 1), (1, -1, 1), (2, -1, 1), (3, -1, 1), (4, -1, 1),
                     (-1, 1, 1), (0, 1, 1), (1, 1, 1), (2, 1, 1), (3, 1, 1), (4, 1, 1)],
@@ -37,6 +42,8 @@ class AI:
         self.list = set()
         for ship in self.graph:
             count = 10000
+            # Если за COUNT попыток не удалось разместить очередной корабль
+            # на игровом поле - попытки прекращаются
             while self.chk(self.graph[ship], random.choice([False, True]),
                            random.randint(0, 10 - int(ship[0])),
                            random.randint(0, 10 - int(ship[0]))):
@@ -45,6 +52,14 @@ class AI:
                     break
 
     def chk(self, coords, swap, x, y):
+        """
+        Функция проверяет на корректность размещение корабля на поле.
+        :param coords: список координат корабля
+        :param swap: направление размещения вертикально/горизонтально
+        :param x:
+        :param y:
+        :return: True - возможно. False - не влезает
+        """
         test = False
         for coord in coords:
             dx = coord[0] + x
@@ -61,5 +76,9 @@ class AI:
         return False
 
     def get_coords(self):
+        """
+        Возвращает множество координат кораблей
+        :return:
+        """
         return self.list
 
