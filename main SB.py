@@ -59,8 +59,8 @@ if __name__ == '__main__':
     pygame.mixer.music.set_volume(0.5)
     music_state = change_music(True)
     running = True
-    size = width, height = 1000, 600
-    screen = pygame.display.set_mode(size)
+    size = width, height = 1200, 700
+    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
     pygame.time.set_timer(pygame.USEREVENT, 1500)
     field1 = Sea(0)
     field1.fill(AI().get_coords())
