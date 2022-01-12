@@ -1,3 +1,4 @@
+import os
 import random
 import sys
 import pygame
@@ -9,12 +10,12 @@ pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512, devicen
 pygame.init()
 
 pygame.display.set_caption('Морской бой')
-pygame.mixer.music.load("music.mp3")
+pygame.mixer.music.load(os.path.join('modules', "music.mp3"))
 clock = pygame.time.Clock()
 fps = 30
 pygame.mixer.music.set_volume(0.5)
 size = width, height = 1200, 700
-db = DBase('seabase.db')
+db = DBase(os.path.join('modules', 'seabase.db'))
 splash_sprites = pygame.sprite.Group()
 screen_rect = pygame.Rect((0, 0), (width, height))
 screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
