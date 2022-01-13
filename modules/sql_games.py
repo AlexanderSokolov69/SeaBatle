@@ -117,7 +117,8 @@ def image_convert(image, color_key=None):
 
 
 def add_score(sc01, sc02, move01, move02):
-    Table('log').add(f"счёт ({sc01}:{sc02}). ходы ({move01}:{move02})")
+    # Table('log').add(f"счёт ({sc01}:{sc02}). ходы ({move01}:{move02})")
+    Table('log').add({'sc01': sc01, 'sc02': sc02, 'move01': move01, 'move02': move02})
     DBase.commit()
 
 

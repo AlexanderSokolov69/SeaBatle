@@ -14,7 +14,7 @@ def main():
     load_music(music_0)
     music_state = change_music(True)
     clock = pygame.time.Clock()
-    screen = pygame.display.set_mode(size)  # , pygame.FULLSCREEN)
+    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
     # ----- SPLASH SCREEN ----------------------------
     pygame.time.set_timer(pygame.USEREVENT + 1, TIMER_SPLASH)
     text_info = [' Сыграй с жуликом и победи!',
@@ -59,9 +59,9 @@ def main():
     field1.fill(AI().get_coords())
     field2 = Sea(1)
     field2.fill(AI().get_coords())
-    spr01 = Button(width - 270, 50, 'ЗАНОВО')
-    spr02 = Button(width - 270, 200, 'МУЗЫКА')
-    spr03 = Button(width - 270, 350, ' ВЫХОД')
+    spr01 = Button(width - 270, 30, 'ЗАНОВО')
+    spr02 = Button(width - 270, 140, 'МУЗЫКА')
+    spr03 = Button(width - 270, 250, ' ВЫХОД')
     Boat(10, 10, 'ship02.PNG')
     Boat(900, height - 150, 'ship01.png')
     running = True
@@ -132,13 +132,6 @@ def main():
 
         field1.render(screen)
         field2.render(screen)
-        font = pygame.font.Font(None, 20)
-        i = 0
-        log = list(Table('log').get().values())
-        for text in log[-1: -12: -1]:
-            string = font.render(text, True, 'black')
-            screen.blit(string, (width - 190, 20 * i + height - 230))
-            i += 1
         game_sprites.draw(screen)
         game_sprites.update()
 

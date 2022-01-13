@@ -2,6 +2,7 @@ import random
 import sys
 
 from modules.const import *
+from modules.sql_games import Table
 
 
 def terminate():
@@ -94,3 +95,12 @@ def win_screen(screen, scr01, scr02, move01, move02):
     font = pygame.font.Font(None, 30)
     text = font.render(outline, True, 'black')
     screen.blit(text, (100, height - 30))
+    font = pygame.font.Font(None, 20)
+    i = 0
+    log = list(Table('log').get().values())
+    for values in log[-1: -16: -1]:
+        text = f"счёт ({values['sc01']}:{values['sc02']}). ходы ({values['move02']}:{values['move01']})"
+        color = 'darkgreen' if values['sc01'] > values['sc02'] else 'darkred'
+        string = font.render(text, True, color)
+        screen.blit(string, (width - 190, 20 * i + height - 330))
+        i += 1
