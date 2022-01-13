@@ -1,5 +1,7 @@
 import pygame
 
+from modules.sql_games import play_sound, load_image
+
 """
 Базовый класс Board
 """
@@ -45,10 +47,11 @@ class Board:
         if cell:
             self.flag = True
             self.on_click(cell)
+        return cell
 
     def getflag(self):
         res = self.flag
-        self.resetflag()
+        # self.resetflag()
         return res
 
     def resetflag(self):
@@ -76,10 +79,12 @@ class Sea(Board):
         count = 0
         self.explore = []  # фазы взрыва
         for i in range(1, 11):
-            fname = f'expl/phase{i:02}.png'
-            self.explore.append(pygame.transform.scale(pygame.image.load(
-            fname).convert_alpha(), (self.cell_size, self.cell_size)))
+            fname = f'phase{i:02}.png'
+            self.explore.append(pygame.transform.scale(load_image(fname), (self.cell_size, self.cell_size)))
         self.queue = []
+        self.move = 0
+        self.last_shot = False
+        self.last_coord = None
 
     # ---------------------------------------------------------------------------
     def add_explore(self, x, y):
@@ -119,6 +124,7 @@ class Sea(Board):
                 self.board[x][y] = 0
         for crd in coords:
             self.board[crd[0]][crd[1]] = 10
+        self.move = 0
 
     # ---------------------------------------------------------------------------
     def render(self, screen):
@@ -217,13 +223,15 @@ class Sea(Board):
         :param cell_coords:
         :return:
         """
+        self.move += 1
         curr = self.board[cell_coords[0]][cell_coords[1]]
         if curr in {0, 10}:
             if curr == 10:
-                pygame.mixer.Sound('expl\explore01.ogg').play()
+                self.last_coord = cell_coords
+                self.last_shot = True
+                play_sound('explore01.ogg')
             else:
-                pygame.mixer.Sound('expl\explore00.ogg').play()
-
+                play_sound('explore00.ogg')
             self.add_explore(cell_coords[0], cell_coords[1])
             self.board[cell_coords[0]][cell_coords[1]] += 1
         curr = self.board[cell_coords[0]][cell_coords[1]]
@@ -234,7 +242,9 @@ class Sea(Board):
             ship = set()
             if self.check(ship, area, x, y) == 0:
                 area = area - ship
-                pygame.mixer.Sound('expl\explore02.ogg').play()
+                self.last_coord = None
+                self.last_shot = False
+                play_sound('explore02.ogg')
                 for block in ship:
                     self.add_explore(block[0], block[1])
                     self.board[block[0]][block[1]] = 12

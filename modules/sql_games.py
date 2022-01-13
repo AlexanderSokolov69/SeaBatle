@@ -76,7 +76,7 @@ class Table:
         return dic
 
 
-def load_images(path='img'):
+def load_images_to_sql(path='img'):
     DBase('seabase.db')
     pg.init()
     for f in os.listdir(path):
@@ -85,33 +85,28 @@ def load_images(path='img'):
         Table('img', type_id='TEXT').put_image(f, image)
     DBase().commit()
     pg.quit()
+    
+
+def play_sound(name):
+    PATH_M = 'modules/snd'
+    if ch := pg.mixer.find_channel(True):
+        file = os.path.join(PATH_M, name)
+        ch.play(pg.mixer.Sound(file))
+
+def load_music(name):
+    PATH_M = 'modules/snd'
+    if ch := pg.mixer.find_channel(True):
+        file = os.path.join(PATH_M, name)
+        pg.mixer.music.load(file)
+        
+def load_image(fname):
+    PATH_M = 'modules/img'
+    file = os.path.join(PATH_M, fname)
+    return pg.image.load(file).convert_alpha()
+    # return image_convert(Table('img').get_image('ship02.PNG')['ship02.PNG'])
+
 
 
 if __name__ == '__main__':
-    load_images()
-    # Table('test').add([1, 2, 3, 4])
-    # Table('test').add({'1': 11111, 'dx': 12, 'dy': 22})
-    # Table('sprite').put(10, {1: 12})
-    #
-    #
-    # pprint(Table('sprite').get())
-    #
-    # pg.init()
-    # # image = pg.image.load('boom.png')
-    # # Table('images').put_image(1, image)
-    # # DBase().commit()
-    #
-    # image = Table('images').get_image(3)[3]
-    #
-    # screen = pg.display.set_mode((400, 400))
-    # flag = True
-    # while flag:
-    #     for event in pg.event.get():
-    #         if event.type == pg.QUIT:
-    #             flag = False
-    #     screen.blit(image, (100, 100))
-    #     pg.display.flip()
-    #
-
-
+    load_images_to_sql()
     
