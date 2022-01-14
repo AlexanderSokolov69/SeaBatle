@@ -1,1 +1,1 @@
-python "main SB.py"
+python "main.py"

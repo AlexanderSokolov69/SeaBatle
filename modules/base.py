@@ -2,11 +2,11 @@ import pygame
 
 from modules.sql_games import play_sound, load_image
 
-"""
-Базовый класс Board
-"""
 
 class Board:
+    """
+    Базовый класс Board
+    """
     # создание поля
     def __init__(self, width, height):
         self.width = width
@@ -28,14 +28,14 @@ class Board:
     def render(self, screen):
         for x in range(self.width):
             for y in range(self.height):
-                    pygame.draw.rect(screen, self.boardcolor,
-                                     (self.left + x * self.cell_size,
-                                      self.top + y * self.cell_size,
-                                      self.cell_size, self.cell_size), width=1)
+                pygame.draw.rect(screen, self.boardcolor,
+                                 (self.left + x * self.cell_size,
+                                  self.top + y * self.cell_size,
+                                  self.cell_size, self.cell_size), width=1)
 
     def get_cell(self, mouse_pos):
-        if self.left < mouse_pos[0] < self.left + self.cell_size * self.width and \
-            self.top < mouse_pos[1] < self.top + self.cell_size * self.height:
+        if self.left < mouse_pos[0] < self.left + self.cell_size * self.width \
+                and self.top < mouse_pos[1] < self.top + self.cell_size * self.height:
             return ((mouse_pos[0] - self.left) // self.cell_size,
                     (mouse_pos[1] - self.top) // self.cell_size)
 
@@ -76,7 +76,6 @@ class Sea(Board):
         super().__init__(10, 10)
         super().set_view(60 + 12 * 40 * num, 150, 40)
         self.num = num
-        count = 0
         self.explore = []  # фазы взрыва
         for i in range(1, 11):
             fname = f'phase{i:02}.png'
@@ -85,6 +84,7 @@ class Sea(Board):
         self.move = 0
         self.last_shot = False
         self.last_coord = None
+        self.move_queue = []
 
     # ---------------------------------------------------------------------------
     def add_explore(self, x, y):
@@ -110,7 +110,7 @@ class Sea(Board):
             self.boardcolor = 'gray'
         else:
             self.boardcolor = 'black'
-        return  count
+        return count
 
     # ---------------------------------------------------------------------------
     def fill(self, coords):
@@ -125,6 +125,9 @@ class Sea(Board):
         for crd in coords:
             self.board[crd[0]][crd[1]] = 10
         self.move = 0
+        self.last_shot = False
+        self.last_coord = None
+        self.move_queue = []
 
     # ---------------------------------------------------------------------------
     def render(self, screen):
@@ -155,33 +158,33 @@ class Sea(Board):
             for y in range(10):
                 if self.board[x][y] in {0, 10} and self.num == 1:
                     screen.fill('gray', (self.left + x * self.cell_size + 2,
-                                 self.top + y * self.cell_size + 2,
-                                 self.cell_size - 4, self.cell_size - 4))
+                                         self.top + y * self.cell_size + 2,
+                                         self.cell_size - 4, self.cell_size - 4))
                 if self.board[x][y] == 10 and self.num == 0:
                     screen.fill('black', (self.left + x * self.cell_size + 2,
-                                 self.top + y * self.cell_size + 2,
-                                 self.cell_size - 4, self.cell_size - 4))
+                                          self.top + y * self.cell_size + 2,
+                                          self.cell_size - 4, self.cell_size - 4))
                 if self.board[x][y] == 11:
                     screen.fill('red', (self.left + x * self.cell_size + 2,
-                                 self.top + y * self.cell_size + 2,
-                                 self.cell_size - 4, self.cell_size - 4))
+                                        self.top + y * self.cell_size + 2,
+                                        self.cell_size - 4, self.cell_size - 4))
                 if self.board[x][y] == 12:
                     screen.fill('brown', (self.left + x * self.cell_size + 2,
-                                 self.top + y * self.cell_size + 2,
-                                 self.cell_size - 4, self.cell_size - 4))
+                                          self.top + y * self.cell_size + 2,
+                                          self.cell_size - 4, self.cell_size - 4))
                 if self.board[x][y] in {1, 11, 12}:
                     pygame.draw.line(screen, 'gray', (self.left + x * self.cell_size + 6,
-                                 self.top + y * self.cell_size + 6),
+                                                      self.top + y * self.cell_size + 6),
                                      (self.left + (x + 1) * self.cell_size - 6,
                                       self.top + (y + 1) * self.cell_size - 6), width=5)
                     pygame.draw.line(screen, 'gray', (self.left + (x + 1) * self.cell_size - 6,
-                                                  self.top + y * self.cell_size + 6),
-                                 (self.left + x * self.cell_size + 6,
-                                  self.top + (y + 1) * self.cell_size - 6), width=5)
+                                                      self.top + y * self.cell_size + 6),
+                                     (self.left + x * self.cell_size + 6,
+                                      self.top + (y + 1) * self.cell_size - 6), width=5)
         tque = []
         for exp in self.queue:
             screen.blit(self.explore[exp[0] // 2], (self.left + exp[1] * self.cell_size + 2,
-                                               self.top + exp[2] * self.cell_size + 2))
+                                                    self.top + exp[2] * self.cell_size + 2))
             if exp[0] < 19:
                 tque.append((exp[0] + 1, exp[1], exp[2]))
             self.queue = tque[:]
@@ -229,6 +232,7 @@ class Sea(Board):
             if curr == 10:
                 self.last_coord = cell_coords
                 self.last_shot = True
+                self.move_queue.append(cell_coords)
                 play_sound('explore01.ogg')
             else:
                 play_sound('explore00.ogg')
@@ -250,4 +254,3 @@ class Sea(Board):
                     self.board[block[0]][block[1]] = 12
                 for block in area:
                     self.board[block[0]][block[1]] = 1
-

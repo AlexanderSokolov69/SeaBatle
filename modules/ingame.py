@@ -35,13 +35,22 @@ def ai_move(board):
         if board.last_shot:
             cnt = 0
             coords = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-            x, y = board.last_coord
+            if len(board.move_queue) > 1:
+                dx = abs(board.move_queue[-1][0] - board.move_queue[-2][0])
+                dy = abs(board.move_queue[-1][1] - board.move_queue[-2][1])
+                if dx + dy == 1:
+                    if dx == 0:
+                        coords = [(0, 1), (0, -1), (0, 2), (0, -2)]
+                    else:
+                        coords = [(1, 0), (-1, 0), (2, 0), (-2, 0)]
+            x, y = board.move_queue[-1]
+            sx, sy = board.move_queue[-1]
             while board.board[x][y] in {1, 11, 12}:
                 shift = random.choice(coords)
-                x = max(min(board.last_coord[0] + shift[0], 9), 0)
-                y = max(min(board.last_coord[1] + shift[1], 9), 0)
+                x = max(min(sx + shift[0], 9), 0)
+                y = max(min(sy + shift[1], 9), 0)
                 cnt += 1
-                if cnt > 12:
+                if cnt > 5:
                     board.last_shot = False
                     break
         else:

@@ -36,9 +36,9 @@ class SplashShot(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.dx = random.randint(20, 80)
-        self.dy = random.randint(-90, -20)
-        self.grav = 5
+        self.dx = random.randint(10, 20)
+        self.dy = random.randint(-18, -10)
+        self.grav = 1
         play_sound('explore01.ogg')
 
     def update(self):
@@ -48,3 +48,6 @@ class SplashShot(pygame.sprite.Sprite):
         if not self.rect.colliderect(screen_rect):
             play_sound('explore00.ogg')
             self.kill()
+
+class SplashBoat(pygame.sprite.Sprite):
+    pass
