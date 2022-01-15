@@ -28,7 +28,7 @@ def main():
                  ' и каждый раз после тебя...',
                  '',
                  '',
-                 '         PRESS ANY KEY']
+                 '  НАЖМИ ЛЮБУЮ КНОПКУ']
     img0 = load_image('title.png')
     SplashBoat(100, 400, load_image('ship02.PNG'))
     SplashBoat(850, 400, load_image('ship01.png'))
@@ -67,24 +67,22 @@ def main():
     Boat(10, 10, 'ship02.PNG')
     Boat(900, height - 150, 'ship01.png')
 
-    cursor = load_image('cursor.png')
+    # cursor = load_image('cursor.png')
+    Cursor()
 
     running = True
-    darkout = True
     gaming = True
     gr = P.GR_LOW
     step = BR_STEP
-    while darkout or running:
+    while running:
         if gaming:
             if gr < GR_HIGH:
                 gr += BR_STEP
-            darkout = True
         else:
             if gr >= GR_HIGH:
                 step = -2
             if gr < P.GR_LOW:
                 step = 0
-                darkout = False
             gr += step
         screen.fill((gr, gr, gr + 20))
         win_screen(screen, field1.score(), field2.score(), field1.move, field2.move)
@@ -145,10 +143,12 @@ def main():
         game_sprites.update()
         field1.render(screen)
         field2.render(screen)
+        cursor_sprites.draw(screen)
+        cursor_sprites.update()
 
-        coord = pygame.mouse.get_pos()
-        # write this in the loop
-        screen.blit(cursor, coord)
+        # coord = pygame.mouse.get_pos()
+        # # write this in the loop
+        # screen.blit(cursor, coord)
         clock.tick(FPS)
         pygame.display.flip()
 

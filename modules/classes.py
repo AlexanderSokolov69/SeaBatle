@@ -5,6 +5,17 @@ from modules.const import *
 from modules.sql_games import DBase, Table, play_sound, load_music, load_image, image_convert
 
 
+class Cursor(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Cursor, self).__init__(cursor_sprites)
+        self.image = load_image('cursor.png')
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.rect.x = pygame.mouse.get_pos()[0]
+        self.rect.y = pygame.mouse.get_pos()[1]
+
+
 class Button(pygame.sprite.Sprite):
     def __init__(self, x, y, text):
         super(Button, self).__init__(game_sprites)

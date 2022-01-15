@@ -23,8 +23,8 @@ def show_stat(screen):
     text = font.render("МОРСКОЙ БОЙ", True, 'red')
     screen.blit(text, (400, 10))
     font = pygame.font.Font(None, 30)
-    text = font.render("(SPACE - new game, M - music on/off)", True, 'brown')
-    screen.blit(text, (380, 55))
+    text = font.render("(ПРОБЕЛ - новая игра, M - музыка on/off)", True, 'brown')
+    screen.blit(text, (360, 55))
 
 
 def ai_move(board):

@@ -1,7 +1,7 @@
 import pygame
 
 FPS0 = 30
-FPS = 40
+FPS = 60
 TIMER_SPLASH = 3500
 size = width, height = 1250, 700
 screen_rect = pygame.Rect((0, 0), (width, height))
@@ -10,6 +10,7 @@ BR_STEP = 2
 
 splash_sprites = pygame.sprite.Group()
 game_sprites = pygame.sprite.Group()
+cursor_sprites = pygame.sprite.Group()
 
 
 class P:
