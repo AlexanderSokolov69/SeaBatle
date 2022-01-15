@@ -5,9 +5,9 @@ from modules.const import *
 
 
 class Field(pygame.sprite.Sprite):
-    def __init__(self, x, y, size):
+    def __init__(self, x, y, fsize):
         super(Field, self).__init__(game_sprites)
-        self.image = pygame.transform.scale(load_image('field.png'), size)
+        self.image = pygame.transform.scale(load_image('field.png'), fsize)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -18,10 +18,10 @@ class Board:
     Базовый класс Board
     """
     # создание поля
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.board = [[0] * height for _ in range(width)]
+    def __init__(self, wx, hy):
+        self.width = wx
+        self.height = hy
+        self.board = [[0] * hy for _ in range(wx)]
         # значения по умолчанию
         self.left = 10
         self.top = 10

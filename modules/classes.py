@@ -59,6 +59,7 @@ class SplashShot(pygame.sprite.Sprite):
             play_sound('explore00.ogg')
             self.kill()
 
+
 class SplashBoat(pygame.sprite.Sprite):
     def __init__(self, x, y, img):
         super(SplashBoat, self).__init__(splash_sprites)

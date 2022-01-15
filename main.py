@@ -12,6 +12,7 @@ def main():
     pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512, devicename=None)
     pygame.init()
     pygame.display.set_caption('Морской бой')
+    pygame.mouse.set_visible(False)  # hide the cursor
     load_music(P.music_0, P.M_VOLUME)
     change_music(True)
     clock = pygame.time.Clock()
@@ -65,6 +66,9 @@ def main():
     spr03 = Button(width - 270, 250, ' ВЫХОД')
     Boat(10, 10, 'ship02.PNG')
     Boat(900, height - 150, 'ship01.png')
+
+    cursor = load_image('cursor.png')
+
     running = True
     darkout = True
     gaming = True
@@ -142,6 +146,9 @@ def main():
         field1.render(screen)
         field2.render(screen)
 
+        coord = pygame.mouse.get_pos()
+        # write this in the loop
+        screen.blit(cursor, coord)
         clock.tick(FPS)
         pygame.display.flip()
 
