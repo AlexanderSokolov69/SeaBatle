@@ -1,6 +1,6 @@
 import pygame
 
-FPS0 = 15
+FPS0 = 30
 FPS = 40
 TIMER_SPLASH = 3500
 size = width, height = 1250, 700
@@ -18,7 +18,8 @@ class P:
     DOP_SHOT = 3000
     M_VOLUME = 0.4
     music_0 = 'music.mp3'
-    music_1 = 'battle.ogg'
+    music_1 = 'battle.mp3'
+    music_2 = 'winners.mp3'
     GR_LOW = 100
     WIN_STAT = 'window'
 
@@ -46,6 +47,10 @@ class P:
             pass
         try:
             cls.music_1 = conf['Music']['music_battle']
+        except Exception:
+            pass
+        try:
+            cls.music_2 = conf['Music']['music_winner']
         except Exception:
             pass
         try:

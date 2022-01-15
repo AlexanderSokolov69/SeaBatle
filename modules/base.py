@@ -45,17 +45,19 @@ class Board:
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
         if cell:
-            self.flag = True
             self.on_click(cell)
         return cell
 
     def getflag(self):
-        res = self.flag
-        # self.resetflag()
-        return res
+        return self.flag
+    
+    def setflag(self):
+        self.flag = True
+        return True
 
     def resetflag(self):
         self.flag = False
+        return False
 
     def get_board(self, x, y):
         if (0 <= x < self.width) and (0 <= y < self.height):
@@ -226,8 +228,9 @@ class Sea(Board):
         :param cell_coords:
         :return:
         """
-        self.move += 1
         curr = self.board[cell_coords[0]][cell_coords[1]]
+        if curr in {0, 10, 11}:
+            self.move += 1
         if curr in {0, 10}:
             if curr == 10:
                 self.last_coord = cell_coords

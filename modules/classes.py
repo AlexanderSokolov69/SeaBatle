@@ -25,8 +25,18 @@ class Boat(pygame.sprite.Sprite):
         super(Boat, self).__init__(game_sprites)
         self.image = pygame.transform.scale(load_image(fimage), (140, 140))
         self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
         self.rect.x = x
         self.rect.y = y
+        self.fps = FPS
+
+    def update(self):
+        self.fps -= 3
+        if self.fps <= 0:
+            self.fps = FPS
+            self.rect.x = self.x + random.randint(-4, 4)
+            self.rect.y = self.y + random.randint(-2, 2)
 
 
 class SplashShot(pygame.sprite.Sprite):
@@ -50,4 +60,19 @@ class SplashShot(pygame.sprite.Sprite):
             self.kill()
 
 class SplashBoat(pygame.sprite.Sprite):
-    pass
+    def __init__(self, x, y, img):
+        super(SplashBoat, self).__init__(splash_sprites)
+        self.image = img
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x
+        self.rect.y = y
+        self.fps = FPS0
+        
+    def update(self):
+        self.fps -= 3
+        if self.fps <= 0:
+            self.fps = FPS0
+            self.rect.x = self.x + random.randint(-10, 10)
+            self.rect.y = self.y + random.randint(-4, 4)

@@ -96,9 +96,10 @@ def play_sound(name):
         ch.play(pg.mixer.Sound(file))
 
 
-def load_music(name):
+def load_music(name, volume):
     file = os.path.join(P.PATH_M, name)
     pg.mixer.music.load(file)
+    pygame.mixer.music.set_volume(volume)
 
 
 def load_image(fname):

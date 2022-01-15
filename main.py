@@ -12,8 +12,7 @@ def main():
     pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512, devicename=None)
     pygame.init()
     pygame.display.set_caption('Морской бой')
-    pygame.mixer.music.set_volume(P.M_VOLUME)
-    load_music(P.music_0)
+    load_music(P.music_0, P.M_VOLUME)
     change_music(True)
     clock = pygame.time.Clock()
     if P.WIN_STAT == 'fullscreen':
@@ -30,8 +29,8 @@ def main():
                  '',
                  '         PRESS ANY KEY']
     img0 = load_image('title.png')
-    img1 = load_image('ship02.PNG')
-    img2 = load_image('ship01.png')
+    SplashBoat(100, 400, load_image('ship02.PNG'))
+    SplashBoat(850, 400, load_image('ship01.png'))
     cont = True
     while cont:
         for event in pygame.event.get():
@@ -43,8 +42,6 @@ def main():
                 SplashShot(150, 500)
         screen.fill('blue')
         font = pygame.font.Font(None, 50)
-        dx, dy = random.randint(-10, 10), random.randint(-4, 4)
-        screen.blit(img2, (850 + dx, 400 + dy))
         splash_sprites.draw(screen)
         splash_sprites.update()
         step = 50
@@ -53,13 +50,11 @@ def main():
             string = font.render(text_info[i], True, 'white')
             screen.blit(string, (left, step * i + 300))
         screen.blit(img0, (250, 20))
-        dx, dy = random.randint(-10, 10), random.randint(-4, 4)
-        screen.blit(img1, (100 + dx, 400 + dy))
         pygame.display.flip()
         clock.tick(FPS0)
     # ----- SPLASH SCREEN END ----------------------------
     pygame.time.set_timer(pygame.USEREVENT, P.DOP_SHOT)
-    load_music(P.music_1)
+    load_music(P.music_1, P.M_VOLUME)
     music_state = change_music(True)
     field1 = Sea(0)
     field1.fill(AI().get_coords())
@@ -92,7 +87,10 @@ def main():
         show_stat(screen)
         if (field1.score() == 0 or field2.score() == 0) and gaming:
             gaming = False
-            load_music(P.music_0)
+            if field1.score() == 0:
+                load_music(P.music_0, 1)
+            else:
+                load_music(P.music_2, 1)
             music_state = change_music(True)
         
         for event in pygame.event.get():
@@ -110,7 +108,7 @@ def main():
                 if event.button == 1:
                     if spr01.check_click(event.pos):
                         add_score(field1.score(), field2.score(), field1.move, field2.move)
-                        load_music(P.music_1)
+                        load_music(P.music_1, P.M_VOLUME)
                         music_state = change_music(True)
                         field1.fill(AI().get_coords())
                         field2.fill(AI().get_coords())
@@ -121,8 +119,11 @@ def main():
                         running = False
                         gaming = False
                     elif gaming:
+                        move = field2.move
                         if not field2.getflag() and field2.get_click(event.pos):
-                            pygame.time.set_timer(pygame.USEREVENT + 2, 500)
+                            if move < field2.move:
+                                field2.setflag()
+                                pygame.time.set_timer(pygame.USEREVENT + 2, 500)
             if event.type == pygame.MOUSEBUTTONUP:
                 pass
             if event.type == pygame.KEYDOWN:
@@ -130,7 +131,7 @@ def main():
                     music_state = change_music(music_state)
                 if event.key == pygame.K_SPACE:
                     add_score(field1.score(), field2.score(), field1.move, field2.move)
-                    load_music(P.music_1)
+                    load_music(P.music_1, P.M_VOLUME)
                     music_state = change_music(True)
                     field1.fill(AI().get_coords())
                     field2.fill(AI().get_coords())
@@ -146,9 +147,8 @@ def main():
 
 
 if __name__ == '__main__':
-    config = configparser.ConfigParser()  # создаём объекта парсера
+    config = configparser.ConfigParser()  # создаём объект парсера
     config.read("settings.ini")  # читаем конфиг
     P.config_parse(config)
-    
     main()
     terminate()
