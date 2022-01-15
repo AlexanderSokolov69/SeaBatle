@@ -49,7 +49,7 @@ def main():
         for i in range(len(text_info)):
             string = font.render(text_info[i], True, 'white')
             screen.blit(string, (left, step * i + 300))
-        screen.blit(img0, (250, 20))
+        screen.blit(img0, (185, 20))
         pygame.display.flip()
         clock.tick(FPS0)
     # ----- SPLASH SCREEN END ----------------------------
@@ -82,7 +82,7 @@ def main():
                 step = 0
                 darkout = False
             gr += step
-        screen.fill((gr, gr, gr))
+        screen.fill((gr, gr, gr + 20))
         win_screen(screen, field1.score(), field2.score(), field1.move, field2.move)
         show_stat(screen)
         if (field1.score() == 0 or field2.score() == 0) and gaming:
@@ -137,11 +137,11 @@ def main():
                     field2.fill(AI().get_coords())
                     gaming = True
         
-        field1.render(screen)
-        field2.render(screen)
         game_sprites.draw(screen)
         game_sprites.update()
-        
+        field1.render(screen)
+        field2.render(screen)
+
         clock.tick(FPS)
         pygame.display.flip()
 

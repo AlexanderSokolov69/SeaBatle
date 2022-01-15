@@ -18,6 +18,8 @@ def show_stat(screen):
     :return:
     """
     font = pygame.font.Font(None, 60)
+    text = font.render("МОРСКОЙ БОЙ", True, 'black')
+    screen.blit(text, (403, 13))
     text = font.render("МОРСКОЙ БОЙ", True, 'red')
     screen.blit(text, (400, 10))
     font = pygame.font.Font(None, 30)
@@ -50,7 +52,7 @@ def ai_move(board):
                 x = max(min(sx + shift[0], 9), 0)
                 y = max(min(sy + shift[1], 9), 0)
                 cnt += 1
-                if cnt > 5:
+                if cnt > 20:
                     board.last_shot = False
                     break
         else:

@@ -1,6 +1,16 @@
 import pygame
 
 from modules.sql_games import play_sound, load_image
+from modules.const import *
+
+
+class Field(pygame.sprite.Sprite):
+    def __init__(self, x, y, size):
+        super(Field, self).__init__(game_sprites)
+        self.image = pygame.transform.scale(load_image('field.png'), size)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 
 class Board:
@@ -24,6 +34,7 @@ class Board:
         self.left = left
         self.top = top
         self.cell_size = cell_size
+        Field(left, top, (cell_size * self.width, cell_size * self.height))
 
     def render(self, screen):
         for x in range(self.width):

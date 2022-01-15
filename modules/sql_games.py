@@ -69,14 +69,14 @@ class Table:
         return dic
     
     def put_image(self, key, image):
-        data = (pg.image.tostring(image, 'RGB'), image.get_size())
-        self.put(key, data)
+        data = (pg.image.tostring(image, 'RGBA'), image.get_size())
+        self.put(key.upper(), data)
     
     def get_image(self, key):
         dic = self.get(key)
         for key, val in dic.items():
-            image = pg.image.fromstring(val[0], val[1], 'RGB')
-            dic[key] = image
+            image = pg.image.fromstring(val[0], val[1], 'RGBA')
+            dic[key.upper()] = image
         return dic
 
 
@@ -85,7 +85,7 @@ def load_images_to_sql(path):
     for f in os.listdir(path):
         print(f)
         image = pg.image.load(os.path.join(path, f))
-        Table('img', type_id='TEXT').put_image(f, image)
+        Table('img', type_id='TEXT').put_image(f.upper(), image)
     DBase().commit()
     pg.quit()
 
@@ -104,7 +104,9 @@ def load_music(name, volume):
 
 def load_image(fname):
     DBase(P.DB_NAME)
+    fname = fname.upper()
     return image_convert(Table('img').get_image(fname)[fname])
+    # return image_convert(pg.image.load(os.path.join('modules/img', fname)))
 
 
 def image_convert(image, color_key=None):

@@ -5,7 +5,7 @@ FPS = 40
 TIMER_SPLASH = 3500
 size = width, height = 1250, 700
 screen_rect = pygame.Rect((0, 0), (width, height))
-GR_HIGH = 240
+GR_HIGH = 220
 BR_STEP = 2
 
 splash_sprites = pygame.sprite.Group()
@@ -13,7 +13,7 @@ game_sprites = pygame.sprite.Group()
 
 
 class P:
-    DB_NAME = 'modules/seabase.db'
+    DB_NAME = 'seabase.db'
     PATH_M = 'modules/snd'
     DOP_SHOT = 3000
     M_VOLUME = 0.4
