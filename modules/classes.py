@@ -1,3 +1,4 @@
+import math
 import random
 import pygame
 
@@ -6,14 +7,55 @@ from modules.sql_games import DBase, Table, play_sound, load_music, load_image, 
 
 
 class Cursor(pygame.sprite.Sprite):
-    def __init__(self):
+    ANIM_FREEZE = 1
+
+    def __init__(self, fname):
         super(Cursor, self).__init__(cursor_sprites)
-        self.image = load_image('cursor.png')
+        self.frames = []
+        self.frame = 0
+        self.cut_images(load_image(fname))
+        self.image = self.frames[self.frame]
         self.rect = self.image.get_rect()
+        self.next_pos = 0, 0
+        self.time = 0
+        self.freeze = Cursor.ANIM_FREEZE
+
+    def cut_images(self, sheet):
+        columns, rows = 4, 2
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                                sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames.append(sheet.subsurface(pygame.Rect(
+                    frame_location, self.rect.size)))
+
+    def move(self, pos, time):
+        self.next_pos = pos
+        self.time = time
+
+    def shot(self):
+        self.frame = 1
 
     def update(self):
-        self.rect.x = pygame.mouse.get_pos()[0]
-        self.rect.y = pygame.mouse.get_pos()[1]
+        self.image = self.frames[self.frame]
+        if self.frame:
+            if self.freeze == 0:
+                self.frame = (self.frame + 1) % 8
+                self.freeze = Cursor.ANIM_FREEZE
+            else:
+                self.freeze -= 1
+        if self.time <= 0:
+            self.rect.x = self.next_pos[0]
+            self.rect.y = self.next_pos[1]
+        else:
+            frames = FPS * (self.time / 1000)
+            dx = self.next_pos[0] - self.rect.x
+            dy = self.next_pos[1] - self.rect.y
+            self.rect.x += int(dx / frames)
+            self.rect.y += int(dy / frames)
+            ky = 1 / frames
+            self.time = self.time - ky * self.time
 
 
 class Button(pygame.sprite.Sprite):

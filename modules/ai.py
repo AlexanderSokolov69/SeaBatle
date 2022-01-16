@@ -6,6 +6,7 @@ import random
 размещенных на игровом поле.
 """
 
+
 class AI:
     def __init__(self):
         self.graph = {  # Базовые наборы координат кораблей и зон отчуждения вокруг них
@@ -61,7 +62,6 @@ class AI:
         :param y:
         :return: True - возможно. False - не влезает
         """
-        test = False
         for coord in coords:
             dx = coord[0] + x
             dy = coord[1] + y
@@ -82,4 +82,3 @@ class AI:
         :return:
         """
         return self.list
-

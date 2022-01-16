@@ -61,7 +61,9 @@ def ai_move(board):
             while board.board[x][y] in {1, 11, 12}:
                 x = random.randint(0, 9)
                 y = random.randint(0, 9)
-        board.on_click((x, y))
+        board.next_move = x, y
+        # board.on_click((x, y))
+        return board.left + board.cell_size * x, board.top + board.cell_size * y
 
 
 def change_music(state):
@@ -102,7 +104,7 @@ def win_screen(screen, scr01, scr02, move01, move02):
     font = pygame.font.Font(None, fsize)
     text = font.render(outline, True, color)
     screen.blit(text, (fsize * 8, height - 80))
-    outline = f"ходы  ты: {move02}  робот: {move01}"
+    outline = f"ходы  игрок: {move02}  робот: {move01}"
     font = pygame.font.Font(None, 30)
     text = font.render(outline, True, 'black')
     screen.blit(text, (100, height - 30))

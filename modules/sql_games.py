@@ -109,10 +109,7 @@ def load_image(fname):
     # return image_convert(pg.image.load(os.path.join('modules/img', fname)))
 
 
-def image_convert(image, color_key=None):
-    if not color_key:
-        color_key = image.get_at((0, 0))
-    image.set_colorkey(color_key)
+def image_convert(image):
     return image.convert_alpha()
 
 

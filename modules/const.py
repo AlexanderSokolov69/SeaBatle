@@ -23,6 +23,7 @@ class P:
     music_2 = 'winners.mp3'
     GR_LOW = 100
     WIN_STAT = 'window'
+    TIME_AI_MOVE = 500
 
     @classmethod
     def config_parse(cls, conf):

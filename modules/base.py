@@ -95,9 +95,14 @@ class Sea(Board):
             self.explore.append(pygame.transform.scale(load_image(fname), (self.cell_size, self.cell_size)))
         self.queue = []
         self.move = 0
+        self.next_move = 0, 0
         self.last_shot = False
         self.last_coord = None
         self.move_queue = []
+        self.fog = True
+
+    def shot(self):
+        self.on_click(self.next_move)
 
     # ---------------------------------------------------------------------------
     def add_explore(self, x, y):
@@ -141,6 +146,7 @@ class Sea(Board):
         self.last_shot = False
         self.last_coord = None
         self.move_queue = []
+        self.fog = True
 
     # ---------------------------------------------------------------------------
     def render(self, screen):
@@ -160,21 +166,25 @@ class Sea(Board):
                            self.top - 50))
         font = pygame.font.Font(None, 30)
         for x in range(10):
-            text = font.render(f"{x}", True, self.boardcolor)
+            text = font.render(f"{chr(x + ord('A'))}", True, self.boardcolor)
             screen.blit(text, (self.left + x * self.cell_size + self.cell_size // 3,
                                self.top + 5 + self.cell_size * 10))
         for y in range(10):
-            text = font.render(f"{y}", True, self.boardcolor)
-            screen.blit(text, (self.left - 20,
+            text = font.render(f"{y + 1:2}", True, self.boardcolor)
+            screen.blit(text, (self.left - 26,
                                self.top + y * self.cell_size + self.cell_size // 3))
         for x in range(10):
             for y in range(10):
-                if self.board[x][y] in {0, 10} and self.num == 1:
+                if self.board[x][y] in {0, 10} and self.num == 1 and self.fog:
                     screen.fill('gray', (self.left + x * self.cell_size + 2,
                                          self.top + y * self.cell_size + 2,
                                          self.cell_size - 4, self.cell_size - 4))
-                if self.board[x][y] == 10 and self.num == 0:
+                if self.board[x][y] == 10 and self.num == 0 and self.fog:
                     screen.fill('black', (self.left + x * self.cell_size + 2,
+                                          self.top + y * self.cell_size + 2,
+                                          self.cell_size - 4, self.cell_size - 4))
+                if self.board[x][y] == 10 and not self.fog:
+                    screen.fill('green', (self.left + x * self.cell_size + 2,
                                           self.top + y * self.cell_size + 2,
                                           self.cell_size - 4, self.cell_size - 4))
                 if self.board[x][y] == 11:
