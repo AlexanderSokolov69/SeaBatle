@@ -1,5 +1,5 @@
-﻿import os
-import pickle
+﻿from os import listdir, path
+from pickle import dumps, loads
 import sqlite3
 
 import pygame
@@ -52,17 +52,17 @@ class Table:
             else:
                 key = 1
             sql = f"INSERT INTO {self.name} (id, data) VALUES (?, ?)"
-            self.cur.execute(sql, (key, pickle.dumps(data)))
+            self.cur.execute(sql, (key, dumps(data)))
             return key
     
     def put(self, key, data):
         sql = f"SELECT id FROM {self.name} WHERE id = ?"
         if self.cur.execute(sql, (key,)).fetchone():
             sql = f"UPDATE {self.name} set data = ? WHERE id = ?"
-            self.cur.execute(sql, (pickle.dumps(data), key))
+            self.cur.execute(sql, (dumps(data), key))
         else:
             sql = f"INSERT INTO {self.name} (id, data) VALUES (?, ?)"
-            self.cur.execute(sql, (key, pickle.dumps(data)))
+            self.cur.execute(sql, (key, dumps(data)))
     
     def get(self, key=None):
         if key:
@@ -74,7 +74,7 @@ class Table:
         
         dic = {}
         for rec in res:
-            dic[rec[0]] = pickle.loads(rec[1])
+            dic[rec[0]] = loads(rec[1])
         return dic
     
     def put_image(self, key, image):
@@ -89,14 +89,14 @@ class Table:
         return dic
 
 
-def load_images_to_sql(path):
+def load_images_to_sql(fpath):
     """
     Перенос файлов изображений из каталога в БД
     """
     pygame.init()
-    for f in os.listdir(path):
+    for f in listdir(fpath):
         print(f)
-        image = pygame.image.load(os.path.join(path, f))
+        image = pygame.image.load(path.join(fpath, f))
         Table('img', type_id='TEXT').put_image(f.upper(), image)
     DBase().commit()
     pygame.quit()
@@ -106,7 +106,7 @@ def load_image(fname):
     DBase(P.DB_NAME)
     fname = fname.upper()
     return image_convert(Table('img').get_image(fname)[fname])
-    # return image_convert(pygame.image.load(os.path.join('modules/img', fname)))
+    # return image_convert(pygame.image.load(path.join('modules/img', fname)))
 
 
 def image_convert(image):
@@ -119,4 +119,5 @@ def add_score(sc01, sc02, move01, move02):
 
 
 if __name__ == '__main__':
+    # Загрузка картинок в БД. При совпадении имён картинка заменяется
     load_images_to_sql('img')

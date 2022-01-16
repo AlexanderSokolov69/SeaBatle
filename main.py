@@ -1,10 +1,9 @@
-import configparser
+from configparser import ConfigParser
 
 from modules.ai import AI
 from modules.base import Sea
 from modules.classes import *
-from modules.ingame import *
-from modules.sql_games import add_score
+from modules.sql_games import *
 
 
 def main():
@@ -178,7 +177,7 @@ def main():
 
 
 if __name__ == '__main__':
-    config = configparser.ConfigParser()  # создаём объект парсера
+    config = ConfigParser()  # создаём объект парсера
     config.read("settings.ini")  # читаем конфиг
     P.config_parse(config)
     main()

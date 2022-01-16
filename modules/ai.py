@@ -1,5 +1,6 @@
-import random
+from random import randint, choice
 
+from modules.ingame import *
 
 """
 Класс AI, формирующий при создании множество координат кораблей, случайным образом 
@@ -46,9 +47,9 @@ class AI:
             count = 10000
             # Если за COUNT попыток не удалось разместить очередной корабль
             # на игровом поле - попытки прекращаются
-            while self.chk(self.graph[ship], random.choice([False, True]),
-                           random.randint(0, 10 - int(ship[0])),
-                           random.randint(0, 10 - int(ship[0]))):
+            while self.chk(self.graph[ship], choice([False, True]),
+                           randint(0, 10 - int(ship[0])),
+                           randint(0, 10 - int(ship[0]))):
                 count -= 1
                 if count == 0:
                     break

@@ -1,6 +1,6 @@
-import os
-import random
-import sys
+from os import path
+from sys import exit
+from random import randint, choice
 
 from modules.const import *
 from modules.sql_games import Table
@@ -9,7 +9,7 @@ from modules.sql_games import Table
 def terminate():
     """ Завершение игры """
     pygame.quit()
-    sys.exit()
+    exit()
 
 
 def show_stat(screen):
@@ -50,7 +50,7 @@ def ai_move(board):
             x, y = board.move_queue[-1]
             sx, sy = board.move_queue[-1]
             while board.board[x][y] in {1, 11, 12}:
-                shift = random.choice(coords)
+                shift = choice(coords)
                 x = max(min(sx + shift[0], 9), 0)
                 y = max(min(sy + shift[1], 9), 0)
                 cnt += 1
@@ -58,11 +58,11 @@ def ai_move(board):
                     board.last_shot = False
                     break
         else:
-            x = random.randint(0, 9)
-            y = random.randint(0, 9)
+            x = randint(0, 9)
+            y = randint(0, 9)
             while board.board[x][y] in {1, 11, 12}:
-                x = random.randint(0, 9)
-                y = random.randint(0, 9)
+                x = randint(0, 9)
+                y = randint(0, 9)
         board.next_move = x, y
         # board.on_click((x, y))
         return board.left + board.cell_size * x, board.top + board.cell_size * y
@@ -129,7 +129,7 @@ def play_sound(name):
     Загрузка в свободный канал миксера звукового эффекта
     """
     if ch := pygame.mixer.find_channel(True):
-        file = os.path.join(P.PATH_M, name)
+        file = path.join(P.PATH_M, name)
         ch.play(pygame.mixer.Sound(file))
 
 
@@ -137,6 +137,6 @@ def load_music(name, volume):
     """
     Загрузка музыкального трека
     """
-    file = os.path.join(P.PATH_M, name)
+    file = path.join(P.PATH_M, name)
     pygame.mixer.music.load(file)
     pygame.mixer.music.set_volume(volume)

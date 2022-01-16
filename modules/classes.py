@@ -1,8 +1,6 @@
-import math
-import random
-import pygame
+from random import randint
 
-from modules.const import *
+from modules.ingame import *
 from modules.sql_games import *
 
 
@@ -98,8 +96,8 @@ class Boat(pygame.sprite.Sprite):
         self.fps -= 3
         if self.fps <= 0:
             self.fps = FPS
-            self.rect.x = self.x + random.randint(-4, 4)
-            self.rect.y = self.y + random.randint(-2, 2)
+            self.rect.x = self.x + randint(-4, 4)
+            self.rect.y = self.y + randint(-2, 2)
 
     def check_click(self, mouse):
         return self.rect.collidepoint(mouse)
@@ -115,8 +113,8 @@ class SplashShot(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.dx = random.randint(10, 20)
-        self.dy = random.randint(-18, -10)
+        self.dx = randint(10, 20)
+        self.dy = randint(-18, -10)
         self.grav = 1
         play_sound('explore01.ogg')
 
@@ -147,5 +145,5 @@ class SplashBoat(pygame.sprite.Sprite):
         self.fps -= 3
         if self.fps <= 0:
             self.fps = FPS0
-            self.rect.x = self.x + random.randint(-10, 10)
-            self.rect.y = self.y + random.randint(-4, 4)
+            self.rect.x = self.x + randint(-10, 10)
+            self.rect.y = self.y + randint(-4, 4)

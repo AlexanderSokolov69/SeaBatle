@@ -1,5 +1,7 @@
 import pygame
 
+from modules.ingame import *
+
 FPS0 = 30   # FPS начального экрана
 FPS = 60    # FPS игрового интерфейса
 TIMER_SPLASH = 3500  # Периодичность анимации стартового экрана

@@ -1,8 +1,5 @@
-import pygame
-
-from modules.sql_games import *
-from modules.const import *
 from modules.ingame import *
+from modules.sql_games import *
 
 
 class Field(pygame.sprite.Sprite):
