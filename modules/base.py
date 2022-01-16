@@ -167,7 +167,7 @@ class Sea(Board):
                            self.top - 50))
         font = pygame.font.Font(None, 30)
         for x in range(10):
-            text = font.render(f"{chr(x + ord('A'))}", True, self.boardcolor)
+            text = font.render(f"{chr(x + ord('А'))}", True, self.boardcolor)
             screen.blit(text, (self.left + x * self.cell_size + self.cell_size // 3,
                                self.top + 5 + self.cell_size * 10))
         for y in range(10):

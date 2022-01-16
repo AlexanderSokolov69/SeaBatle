@@ -13,7 +13,7 @@ class Cursor(pygame.sprite.Sprite):
     ANIM_FREEZE = 1
 
     def __init__(self, fname, columns, rows):
-        super(Cursor, self).__init__(cursor_sprites, splash_sprites)
+        super(Cursor, self).__init__(cursor_sprites)
         self.frames = []
         self.frame = 0
         self.cut_images(load_image(fname), columns, rows)

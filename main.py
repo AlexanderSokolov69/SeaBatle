@@ -29,9 +29,10 @@ def main():
                  '',
                  '  НАЖМИ ЛЮБУЮ КНОПКУ']
     img0 = load_image('title.png')
-    shot = SplashBoat(100, 400, load_image('ship02.PNG'))
+    SplashBoat(100, 400, load_image('ship02.PNG'))
     boat02 = SplashBoat(850, 400, load_image('ship01.png'))
     boom = Cursor('explore02.png', 8, 4)
+    shot = None
     cont = True
     while cont:
         for event in pygame.event.get():
@@ -40,18 +41,20 @@ def main():
             if event.type == pygame.KEYDOWN:
                 cont = False
             if event.type == (pygame.USEREVENT + 1):
-                boom.move((150, 500), 0)
-                boom.shot()
-                # shot = SplashShot(150, 500)
+                # boom.move((150, 500), 0)
+                # boom.shot()
+                shot = SplashShot(150, 500)
         screen.fill('blue')
         font = pygame.font.Font(None, 50)
-        splash_sprites.draw(screen)
         splash_sprites.update()
-        if pygame.sprite.collide_mask(boat02, shot):
-            pass
-        #     # explore.shot()
-        #     explore.move((shot.rect.x, shot.rect.y), 500)
-        #     shot.kill()
+        splash_sprites.draw(screen)
+        cursor_sprites.update()
+        cursor_sprites.draw(screen)
+        if shot and boom.frame == 0 and pygame.sprite.collide_mask(boat02, shot):
+            play_sound('explore02.ogg')
+            boom.shot()
+            boom.move((shot.rect.x, shot.rect.y), 0)
+            shot.kill()
         step = 50
         left = 400
         for i in range(len(text_info)):
