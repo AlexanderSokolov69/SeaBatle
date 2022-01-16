@@ -1,5 +1,7 @@
 from random import randint
 
+import pygame.sprite
+
 from modules.ingame import *
 from modules.sql_games import *
 
@@ -10,19 +12,18 @@ class Cursor(pygame.sprite.Sprite):
     """
     ANIM_FREEZE = 1
 
-    def __init__(self, fname):
-        super(Cursor, self).__init__(cursor_sprites)
+    def __init__(self, fname, columns, rows):
+        super(Cursor, self).__init__(cursor_sprites, splash_sprites)
         self.frames = []
         self.frame = 0
-        self.cut_images(load_image(fname))
+        self.cut_images(load_image(fname), columns, rows)
         self.image = self.frames[self.frame]
         self.rect = self.image.get_rect()
         self.next_pos = 0, 0
         self.time = 0
         self.freeze = Cursor.ANIM_FREEZE
 
-    def cut_images(self, sheet):
-        columns, rows = 4, 2
+    def cut_images(self, sheet, columns, rows):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
                                 sheet.get_height() // rows)
         for j in range(rows):
@@ -41,8 +42,8 @@ class Cursor(pygame.sprite.Sprite):
     def update(self):
         self.image = self.frames[self.frame]
         if self.frame:
-            if self.freeze == 0:
-                self.frame = (self.frame + 1) % 8
+            if self.freeze <= 0:
+                self.frame = (self.frame + 1) % len(self.frames)
                 self.freeze = Cursor.ANIM_FREEZE
             else:
                 self.freeze -= 1
@@ -100,6 +101,7 @@ class Boat(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = x
         self.rect.y = y
         self.fps = FPS
@@ -134,7 +136,8 @@ class SplashShot(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.dx = randint(10, 20)
+        self.mask = pygame.mask.from_surface(self.image)
+        self.dx = randint(10, 30)
         self.dy = randint(-18, -10)
         self.grav = 1
         play_sound('explore01.ogg')

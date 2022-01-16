@@ -29,8 +29,9 @@ def main():
                  '',
                  '  НАЖМИ ЛЮБУЮ КНОПКУ']
     img0 = load_image('title.png')
-    SplashBoat(100, 400, load_image('ship02.PNG'))
-    SplashBoat(850, 400, load_image('ship01.png'))
+    shot = SplashBoat(100, 400, load_image('ship02.PNG'))
+    boat02 = SplashBoat(850, 400, load_image('ship01.png'))
+    boom = Cursor('explore02.png', 8, 4)
     cont = True
     while cont:
         for event in pygame.event.get():
@@ -39,11 +40,18 @@ def main():
             if event.type == pygame.KEYDOWN:
                 cont = False
             if event.type == (pygame.USEREVENT + 1):
-                SplashShot(150, 500)
+                boom.move((150, 500), 0)
+                boom.shot()
+                # shot = SplashShot(150, 500)
         screen.fill('blue')
         font = pygame.font.Font(None, 50)
         splash_sprites.draw(screen)
         splash_sprites.update()
+        if pygame.sprite.collide_mask(boat02, shot):
+            pass
+        #     # explore.shot()
+        #     explore.move((shot.rect.x, shot.rect.y), 500)
+        #     shot.kill()
         step = 50
         left = 400
         for i in range(len(text_info)):
@@ -66,15 +74,16 @@ def main():
     spr04 = Boat(10, 10, 'ship02.PNG', 3)
     spr05 = Boat(900, height - 150, 'ship01.png', 4)
     sprites = [spr01, spr02, spr04, spr05]
-    # cursor =
-    cursor_player = Cursor('mortira.png')
-    cursor_ai = Cursor('targets.png')
+    # Курсоры
+    cursor_player = Cursor('mortira.png', 4, 2)  # Курсор игрока
+    cursor_ai = Cursor('targets.png', 4, 2)  # Курсор компьютера
 
     running = True
     gaming = True
     gr = P.GR_LOW
     step = BR_STEP
     queue_clk = []
+    # --------------------- ОСНОВНОЙ ИГРОВОЙ ЦИКЛ ------------------------
     while running:
         if gaming:
             if gr < GR_HIGH:
@@ -85,11 +94,13 @@ def main():
             if gr < P.GR_LOW:
                 step = 0
             gr += step
+        # ------ Начало отрисовки следующего экрана --------------
         screen.fill((gr, gr, gr + 20))
         win_screen(screen, field1.score(), field2.score(), field1.move, field2.move)
         show_stat(screen)
-        if (field1.score() == 0 or field2.score() == 0) and gaming:
-            add_score(field1.score(), field2.score(), field1.move, field2.move)
+        # --------------------------------------------------------
+        if (field1.score() == 0 or field2.score() == 0) and gaming:  # --- ЕСТЬ ПОБЕДИТЕЛЬ!!! ---
+            add_score(field1.score(), field2.score(), field1.move, field2.move)  # Сохранение итогов игры
             gaming = False
             field1.fog = False
             field2.fog = False
@@ -98,14 +109,14 @@ def main():
             else:
                 load_music(P.music_2, 1)
             music_state = change_music(True)
-        
+        # --------- Цикл обработки событий ----------
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.time.set_timer(pygame.USEREVENT + 4, FPS)
+                pygame.time.set_timer(pygame.USEREVENT + 4, FPS)  # Секундная задержка перед завершением игры
             if event.type == pygame.USEREVENT + 4:
                 running = False
                 gaming = False
-            if event.type in (pygame.USEREVENT, pygame.USEREVENT + 2):
+            if event.type in (pygame.USEREVENT, pygame.USEREVENT + 2):  # Срабатывание таймеров хода AI
                 if gaming:
                     if event.type == pygame.USEREVENT:
                         pygame.time.set_timer(pygame.USEREVENT, P.DOP_SHOT)
@@ -116,28 +127,28 @@ def main():
                         cursor_ai.shot()
                         field1.shot()
                         field2.resetflag()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 2:
+            if event.type == pygame.MOUSEBUTTONDOWN:  # Обработка клика мыши
+                if event.button == 2:  # Средняя кнопка мыши
                     for obj in sprites:
                         if obj.check_click(event.pos):
                             queue_clk.append(obj.uid)
                     if spr03.check_click(event.pos):
                         queue_clk = []
-                    if queue_clk == FOG_OFF:
+                    if queue_clk == FOG_OFF:  # Отключение "тумана войны" по совпадению последовательности
                         field2.fog = False
                         queue_clk = []
                     else:
                         field2.fog = True
-                if event.button == 1:
-                    if spr01.check_click(event.pos):
+                if event.button == 1:  # Левая кнопка мыши
+                    if spr01.check_click(event.pos):  # Кнопка "ЗАНОВО"
                         load_music(P.music_1, P.M_VOLUME)
                         music_state = change_music(True)
                         field1.fill(AI().get_coords())
                         field2.fill(AI().get_coords())
                         gaming = True
-                    elif spr02.check_click(event.pos):
+                    elif spr02.check_click(event.pos):  # Кнопка "МУЗЫКА"
                         music_state = change_music(music_state)
-                    elif spr03.check_click(event.pos):
+                    elif spr03.check_click(event.pos):  # Кнопка "ВЫХОД"
                         pygame.time.set_timer(pygame.USEREVENT + 4, FPS)
                     elif gaming:
                         move = field2.move
@@ -146,33 +157,30 @@ def main():
                                 cursor_player.shot()
                                 field2.setflag()
                                 pygame.time.set_timer(pygame.USEREVENT + 2, TIME_AI_MOVE)
-                                cursor_ai.move(ai_move(field1), TIME_AI_MOVE)  # Ход компьютера
+                                cursor_ai.move(ai_move(field1), TIME_AI_MOVE)  # Ход компьютера и передача координат
             if event.type == pygame.MOUSEBUTTONUP:
                 pass
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_m:
                     music_state = change_music(music_state)
                 if event.key == pygame.K_SPACE:
-                    add_score(field1.score(), field2.score(), field1.move, field2.move)
                     load_music(P.music_1, P.M_VOLUME)
                     music_state = change_music(True)
                     field1.fill(AI().get_coords())
                     field2.fill(AI().get_coords())
                     gaming = True
-        
-        cursor_player.move(pygame.mouse.get_pos(), 0)
-        game_sprites.draw(screen)
-        game_sprites.update()
-        field1.render(screen)
-        field2.render(screen)
-        cursor_sprites.draw(screen)
-        cursor_sprites.update()
+        # ------ Конец цикла обработки событий -------
 
-        # coord = pygame.mouse.get_pos()
-        # # write this in the loop
-        # screen.blit(cursor, coord)
+        cursor_player.move(pygame.mouse.get_pos(), 0)  # Передача координат мыши курсору игрока
+        game_sprites.draw(screen)  # Отрисовка спрайтов нижнего слоя
+        game_sprites.update()  # Просчёт спрайтов нижнего слова
+        field1.render(screen)  # Отрисовка игрового поля 1
+        field2.render(screen)  # Отрисовка игрового поля 2
+        cursor_sprites.draw(screen)  # Отрисовка спрайтов верхнего слоя
+        cursor_sprites.update()  # Просчёт спрайтов верхнего слова
         clock.tick(FPS)
         pygame.display.flip()
+        # ---------------------------------------------------------------------------------
 
 
 if __name__ == '__main__':
