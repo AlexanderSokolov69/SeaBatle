@@ -1,3 +1,4 @@
+import os
 import random
 import sys
 
@@ -30,8 +31,9 @@ def show_stat(screen):
 def ai_move(board):
     """
     Выполнение хода компьютером
-    :param board:
-    :return:
+    По последним двум попаданиям пытается выяснить направление расположения корабля противника
+    и выполнить выстрел по соседним полям.
+    Если это не удаётся, выстрел выполняется в случайное свободное поле.
     """
     if board.score() > 0:
         if board.last_shot:
@@ -81,6 +83,9 @@ def change_music(state):
 
 
 def win_screen(screen, scr01, scr02, move01, move02):
+    """
+    Формирование информационных и мотивирующих игровых строк внизу экрана
+    """
     if scr02 == 0:
         outline = f"ПОБЕДА!"
         color = 'green'
@@ -95,7 +100,7 @@ def win_screen(screen, scr01, scr02, move01, move02):
         fsize = 40
     else:
         outline = f"Соберись!"
-        color = 'magenta'
+        color = 'firebrick1'
         fsize = 40
     font = pygame.font.Font(None, fsize)
     text = font.render(outline, True, color)
@@ -106,7 +111,7 @@ def win_screen(screen, scr01, scr02, move01, move02):
     screen.blit(text, (fsize * 8, height - 80))
     outline = f"ходы  игрок: {move02}  робот: {move01}"
     font = pygame.font.Font(None, 30)
-    text = font.render(outline, True, 'black')
+    text = font.render(outline, True, 'blue')
     screen.blit(text, (100, height - 30))
     font = pygame.font.Font(None, 20)
     i = 0
@@ -117,3 +122,21 @@ def win_screen(screen, scr01, scr02, move01, move02):
         string = font.render(text, True, color)
         screen.blit(string, (width - 190, 20 * i + height - 330))
         i += 1
+
+
+def play_sound(name):
+    """
+    Загрузка в свободный канал миксера звукового эффекта
+    """
+    if ch := pygame.mixer.find_channel(True):
+        file = os.path.join(P.PATH_M, name)
+        ch.play(pygame.mixer.Sound(file))
+
+
+def load_music(name, volume):
+    """
+    Загрузка музыкального трека
+    """
+    file = os.path.join(P.PATH_M, name)
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.set_volume(volume)

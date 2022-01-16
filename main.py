@@ -61,12 +61,12 @@ def main():
     field1.fill(AI().get_coords())
     field2 = Sea(1)
     field2.fill(AI().get_coords())
-    spr01 = Button(width - 270, 30, 'ЗАНОВО')
-    spr02 = Button(width - 270, 140, 'МУЗЫКА')
+    spr01 = Button(width - 270, 30, 'ЗАНОВО', 1)
+    spr02 = Button(width - 270, 140, 'МУЗЫКА', 2)
     spr03 = Button(width - 270, 250, ' ВЫХОД')
-    Boat(10, 10, 'ship02.PNG')
-    Boat(900, height - 150, 'ship01.png')
-
+    spr04 = Boat(10, 10, 'ship02.PNG', 3)
+    spr05 = Boat(900, height - 150, 'ship01.png', 4)
+    sprites = [spr01, spr02, spr04, spr05]
     # cursor =
     cursor_player = Cursor('mortira.png')
     cursor_ai = Cursor('targets.png')
@@ -75,7 +75,7 @@ def main():
     gaming = True
     gr = P.GR_LOW
     step = BR_STEP
-    # field2.fog = False
+    queue_clk = []
     while running:
         if gaming:
             if gr < GR_HIGH:
@@ -87,6 +87,7 @@ def main():
                 step = 0
             gr += step
         screen.fill((gr, gr, gr + 20))
+        # pygame.draw.rect(screen, 'gray', (60, height - 100, 500, 100))
         win_screen(screen, field1.score(), field2.score(), field1.move, field2.move)
         show_stat(screen)
         if (field1.score() == 0 or field2.score() == 0) and gaming:
@@ -108,14 +109,25 @@ def main():
                 if gaming:
                     if event.type == pygame.USEREVENT:
                         pygame.time.set_timer(pygame.USEREVENT, P.DOP_SHOT)
-                        pygame.time.set_timer(pygame.USEREVENT + 2, P.TIME_AI_MOVE)
-                        cursor_ai.move(ai_move(field1), P.TIME_AI_MOVE)  # Основной и Дополнительный ход компьютера
+                        pygame.time.set_timer(pygame.USEREVENT + 2, TIME_AI_MOVE)
+                        cursor_ai.move(ai_move(field1), TIME_AI_MOVE)  # Основной и Дополнительный ход компьютера
                     else:
                         pygame.time.set_timer(pygame.USEREVENT + 2, 0)
                         cursor_ai.shot()
                         field1.shot()
                         field2.resetflag()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 2:
+                    for obj in sprites:
+                        if obj.check_click(event.pos):
+                            queue_clk.append(obj.uid)
+                    if spr03.check_click(event.pos):
+                        queue_clk = []
+                    if queue_clk == FOG_OFF:
+                        field2.fog = False
+                        queue_clk = []
+                    else:
+                        field2.fog = True
                 if event.button == 1:
                     if spr01.check_click(event.pos):
                         add_score(field1.score(), field2.score(), field1.move, field2.move)
@@ -135,8 +147,8 @@ def main():
                             if move < field2.move:
                                 cursor_player.shot()
                                 field2.setflag()
-                                pygame.time.set_timer(pygame.USEREVENT + 2, P.TIME_AI_MOVE)
-                                cursor_ai.move(ai_move(field1), P.TIME_AI_MOVE)  # Ход компьютера
+                                pygame.time.set_timer(pygame.USEREVENT + 2, TIME_AI_MOVE)
+                                cursor_ai.move(ai_move(field1), TIME_AI_MOVE)  # Ход компьютера
             if event.type == pygame.MOUSEBUTTONUP:
                 pass
             if event.type == pygame.KEYDOWN:

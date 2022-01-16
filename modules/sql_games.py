@@ -2,12 +2,15 @@
 import pickle
 import sqlite3
 
-import pygame as pg
+import pygame
 
 from modules.const import *
 
 
 class DBase:
+    """
+    Класс для подключения к SQLite базе данных
+    """
     _db = None
     
     def __init__(self, name=None):
@@ -24,7 +27,13 @@ class DBase:
 
 
 class Table:
+    """
+    Класс для работы с таблицами базы данных
+    """
     def __init__(self, name, type_id='INTEGER'):  # types: 'INTEGER', 'TEXT', etc
+        """
+        Таблица с именем NAME создаётся, если отсутствует
+        """
         self.name = name
         self.cur = DBase(P.DB_NAME).connect()
         self.type_id = type_id.upper()
@@ -69,44 +78,35 @@ class Table:
         return dic
     
     def put_image(self, key, image):
-        data = (pg.image.tostring(image, 'RGBA'), image.get_size())
+        data = (pygame.image.tostring(image, 'RGBA'), image.get_size())
         self.put(key.upper(), data)
     
     def get_image(self, key):
         dic = self.get(key)
         for key, val in dic.items():
-            image = pg.image.fromstring(val[0], val[1], 'RGBA')
+            image = pygame.image.fromstring(val[0], val[1], 'RGBA')
             dic[key.upper()] = image
         return dic
 
 
 def load_images_to_sql(path):
-    pg.init()
+    """
+    Перенос файлов изображений из каталога в БД
+    """
+    pygame.init()
     for f in os.listdir(path):
         print(f)
-        image = pg.image.load(os.path.join(path, f))
+        image = pygame.image.load(os.path.join(path, f))
         Table('img', type_id='TEXT').put_image(f.upper(), image)
     DBase().commit()
-    pg.quit()
-
-
-def play_sound(name):
-    if ch := pg.mixer.find_channel(True):
-        file = os.path.join(P.PATH_M, name)
-        ch.play(pg.mixer.Sound(file))
-
-
-def load_music(name, volume):
-    file = os.path.join(P.PATH_M, name)
-    pg.mixer.music.load(file)
-    pygame.mixer.music.set_volume(volume)
+    pygame.quit()
 
 
 def load_image(fname):
     DBase(P.DB_NAME)
     fname = fname.upper()
     return image_convert(Table('img').get_image(fname)[fname])
-    # return image_convert(pg.image.load(os.path.join('modules/img', fname)))
+    # return image_convert(pygame.image.load(os.path.join('modules/img', fname)))
 
 
 def image_convert(image):

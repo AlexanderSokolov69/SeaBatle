@@ -1,7 +1,8 @@
 import pygame
 
-from modules.sql_games import play_sound, load_image
+from modules.sql_games import *
 from modules.const import *
+from modules.ingame import *
 
 
 class Field(pygame.sprite.Sprite):
@@ -102,6 +103,9 @@ class Sea(Board):
         self.fog = True
 
     def shot(self):
+        """
+        Фиксация результатов выстрела по выбранным координатам
+        """
         self.on_click(self.next_move)
 
     # ---------------------------------------------------------------------------

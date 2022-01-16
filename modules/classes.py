@@ -3,10 +3,13 @@ import random
 import pygame
 
 from modules.const import *
-from modules.sql_games import DBase, Table, play_sound, load_music, load_image, image_convert
+from modules.sql_games import *
 
 
 class Cursor(pygame.sprite.Sprite):
+    """
+    Класс, реализующий различные курсоры с анимацией
+    """
     ANIM_FREEZE = 1
 
     def __init__(self, fname):
@@ -50,16 +53,18 @@ class Cursor(pygame.sprite.Sprite):
             self.rect.y = self.next_pos[1]
         else:
             frames = FPS * (self.time / 1000)
-            dx = self.next_pos[0] - self.rect.x
-            dy = self.next_pos[1] - self.rect.y
-            self.rect.x += int(dx / frames)
-            self.rect.y += int(dy / frames)
-            ky = 1 / frames
-            self.time = self.time - ky * self.time
+            dx = (self.next_pos[0] - self.rect.x) / frames
+            dy = (self.next_pos[1] - self.rect.y) / frames
+            self.rect.x += 5 * dx
+            self.rect.y += 5 * dy
+            self.time -= self.time // frames
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, x, y, text):
+    """
+    Реализация кнопок меню, участвуют в "пасхальной" последовательности
+    """
+    def __init__(self, x, y, text, uid=0):
         super(Button, self).__init__(game_sprites)
         self.image = image_convert(load_image('menu.PNG'))
         self.rect = self.image.get_rect()
@@ -68,13 +73,17 @@ class Button(pygame.sprite.Sprite):
         font = pygame.font.Font(None, 60)
         text = font.render(text, True, 'brown')
         self.image.blit(text, (32, 35))
+        self.uid = uid
 
     def check_click(self, mouse):
         return self.rect.collidepoint(mouse)
 
 
 class Boat(pygame.sprite.Sprite):
-    def __init__(self, x, y, fimage):
+    """
+    Анимированные корабли противников, участвуют в "пасхальной" последовательности
+    """
+    def __init__(self, x, y, fimage, uid=0):
         super(Boat, self).__init__(game_sprites)
         self.image = pygame.transform.scale(load_image(fimage), (140, 140))
         self.rect = self.image.get_rect()
@@ -83,6 +92,7 @@ class Boat(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.fps = FPS
+        self.uid = uid
 
     def update(self):
         self.fps -= 3
@@ -91,8 +101,14 @@ class Boat(pygame.sprite.Sprite):
             self.rect.x = self.x + random.randint(-4, 4)
             self.rect.y = self.y + random.randint(-2, 2)
 
+    def check_click(self, mouse):
+        return self.rect.collidepoint(mouse)
+
 
 class SplashShot(pygame.sprite.Sprite):
+    """
+    Летающее ядро на заставке
+    """
     def __init__(self, x, y):
         super(SplashShot, self).__init__(splash_sprites)
         self.image = load_image('shot02.PNG')
@@ -114,6 +130,9 @@ class SplashShot(pygame.sprite.Sprite):
 
 
 class SplashBoat(pygame.sprite.Sprite):
+    """
+    Анимированные корабли на заставке
+    """
     def __init__(self, x, y, img):
         super(SplashBoat, self).__init__(splash_sprites)
         self.image = img
