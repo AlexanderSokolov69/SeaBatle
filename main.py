@@ -86,10 +86,10 @@ def main():
                 step = 0
             gr += step
         screen.fill((gr, gr, gr + 20))
-        # pygame.draw.rect(screen, 'gray', (60, height - 100, 500, 100))
         win_screen(screen, field1.score(), field2.score(), field1.move, field2.move)
         show_stat(screen)
         if (field1.score() == 0 or field2.score() == 0) and gaming:
+            add_score(field1.score(), field2.score(), field1.move, field2.move)
             gaming = False
             field1.fog = False
             field2.fog = False
@@ -101,9 +101,10 @@ def main():
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.time.set_timer(pygame.USEREVENT + 4, FPS)
+            if event.type == pygame.USEREVENT + 4:
                 running = False
                 gaming = False
-                add_score(field1.score(), field2.score(), field1.move, field2.move)
             if event.type in (pygame.USEREVENT, pygame.USEREVENT + 2):
                 if gaming:
                     if event.type == pygame.USEREVENT:
@@ -129,7 +130,6 @@ def main():
                         field2.fog = True
                 if event.button == 1:
                     if spr01.check_click(event.pos):
-                        add_score(field1.score(), field2.score(), field1.move, field2.move)
                         load_music(P.music_1, P.M_VOLUME)
                         music_state = change_music(True)
                         field1.fill(AI().get_coords())
@@ -138,8 +138,7 @@ def main():
                     elif spr02.check_click(event.pos):
                         music_state = change_music(music_state)
                     elif spr03.check_click(event.pos):
-                        running = False
-                        gaming = False
+                        pygame.time.set_timer(pygame.USEREVENT + 4, FPS)
                     elif gaming:
                         move = field2.move
                         if not field2.getflag() and field2.get_click(event.pos):

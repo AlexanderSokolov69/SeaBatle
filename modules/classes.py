@@ -64,17 +64,30 @@ class Button(pygame.sprite.Sprite):
     """
     def __init__(self, x, y, text, uid=0):
         super(Button, self).__init__(game_sprites)
-        self.image = image_convert(load_image('menu.PNG'))
+        self.image2 = image_convert(load_image('menu2.PNG'))
+        self.image1 = image_convert(load_image('menu.PNG'))
+        font = pygame.font.Font(None, 60)
+        text = font.render(text, True, 'brown')
+        self.image1.blit(text, (32, 35))
+        self.image2.blit(text, (32 + 5, 35 + 5))
+        self.image = self.image1
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        font = pygame.font.Font(None, 60)
-        text = font.render(text, True, 'brown')
-        self.image.blit(text, (32, 35))
         self.uid = uid
+        self.count = 0
 
     def check_click(self, mouse):
-        return self.rect.collidepoint(mouse)
+        if ret := self.rect.collidepoint(mouse):
+            self.count = FPS // 4
+        return ret
+
+    def update(self):
+        if self.count > 0:
+            self.image = self.image2
+            self.count -= 1
+        else:
+            self.image = self.image1
 
 
 class Boat(pygame.sprite.Sprite):
@@ -91,16 +104,24 @@ class Boat(pygame.sprite.Sprite):
         self.rect.y = y
         self.fps = FPS
         self.uid = uid
+        self.count = 0
 
     def update(self):
-        self.fps -= 3
-        if self.fps <= 0:
-            self.fps = FPS
-            self.rect.x = self.x + randint(-4, 4)
+        if self.count > 0:
+            self.count -= 1
+            self.rect.x = self.x + randint(-2, 2)
             self.rect.y = self.y + randint(-2, 2)
+        else:
+            self.fps -= 3
+            if self.fps <= 0:
+                self.fps = FPS
+                self.rect.x = self.x + randint(-4, 4)
+                self.rect.y = self.y + randint(-2, 2)
 
     def check_click(self, mouse):
-        return self.rect.collidepoint(mouse)
+        if ret := self.rect.collidepoint(mouse):
+            self.count = FPS
+        return ret
 
 
 class SplashShot(pygame.sprite.Sprite):
