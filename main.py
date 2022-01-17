@@ -41,20 +41,17 @@ def main():
             if event.type == pygame.KEYDOWN:
                 cont = False
             if event.type == (pygame.USEREVENT + 1):
-                # boom.move((150, 500), 0)
-                # boom.shot()
                 shot = SplashShot(150, 500)
         screen.fill('blue')
         font = pygame.font.Font(None, 50)
         splash_sprites.update()
         splash_sprites.draw(screen)
-        cursor_sprites.update()
-        cursor_sprites.draw(screen)
         if shot and boom.frame == 0 and pygame.sprite.collide_mask(boat02, shot):
             play_sound('explore02.ogg')
-            boom.shot()
             boom.move((shot.rect.x, shot.rect.y), 0)
             shot.kill()
+            shot = None
+            boom.shot()
         step = 50
         left = 400
         for i in range(len(text_info)):
@@ -71,11 +68,11 @@ def main():
     field1.fill(AI().get_coords())
     field2 = Sea(1)
     field2.fill(AI().get_coords())
-    spr01 = Button(width - 270, 30, 'ЗАНОВО', 1)
-    spr02 = Button(width - 270, 140, 'МУЗЫКА', 2)
-    spr03 = Button(width - 270, 250, ' ВЫХОД')
-    spr04 = Boat(10, 10, 'ship02.PNG', 3)
-    spr05 = Boat(900, height - 150, 'ship01.png', 4)
+    spr01 = Button(width - 270, 30, 'ЗАНОВО', 1)  # uid = 1
+    spr02 = Button(width - 270, 140, 'МУЗЫКА', 2)  # uid = 2
+    spr03 = Button(width - 270, 250, ' ВЫХОД')  # uid = 0
+    spr04 = Boat(10, 10, 'ship02.PNG', 3)  # uid = 3
+    spr05 = Boat(900, height - 150, 'ship01.png', 4)  # uid = 4
     sprites = [spr01, spr02, spr04, spr05]
     # Курсоры
     cursor_player = Cursor('mortira.png', 4, 2)  # Курсор игрока
@@ -85,7 +82,7 @@ def main():
     gaming = True
     gr = P.GR_LOW
     step = BR_STEP
-    queue_clk = []
+    queue_clk = []  # Последовательность кликов средней кнопкой мыши для "пасхалки"
     # --------------------- ОСНОВНОЙ ИГРОВОЙ ЦИКЛ ------------------------
     while running:
         if gaming:
