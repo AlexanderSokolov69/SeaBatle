@@ -12,11 +12,9 @@ def terminate():
     exit()
 
 
-def show_stat(screen):
+def show_stat(screen, text_low):
     """
     Формирование дополнительной графики, вне игровых полей
-    :param screen:
-    :return:
     """
     font = pygame.font.Font(None, 60)
     text = font.render("МОРСКОЙ БОЙ", True, 'black')
@@ -24,7 +22,7 @@ def show_stat(screen):
     text = font.render("МОРСКОЙ БОЙ", True, 'red')
     screen.blit(text, (400, 10))
     font = pygame.font.Font(None, 30)
-    text = font.render("(ПРОБЕЛ - новая игра, M - музыка on/off)", True, 'brown')
+    text = font.render(text_low, True, 'brown')
     screen.blit(text, (360, 55))
 
 

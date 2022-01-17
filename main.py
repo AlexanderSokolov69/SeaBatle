@@ -82,24 +82,16 @@ def main():
 
     running = True
     gaming = True
-    gr = P.GR_LOW
-    step = BR_STEP
+    newgame = True
+    bright = P.GR_LOW
     queue_clk = []  # Последовательность кликов средней кнопкой мыши для "пасхалки"
     # --------------------- ОСНОВНОЙ ИГРОВОЙ ЦИКЛ ------------------------
     while running:
-        if gaming:
-            if gr < GR_HIGH:
-                gr += BR_STEP
-        else:
-            if gr >= GR_HIGH:
-                step = -2
-            if gr < P.GR_LOW:
-                step = 0
-            gr += step
+        bright = BrightCounter.count(gaming)
         # ------ Начало отрисовки следующего экрана --------------
-        screen.fill((gr, gr, gr + 20))
+        screen.fill((bright, bright, bright + 20))
         win_screen(screen, field1.score(), field2.score(), field1.move, field2.move)
-        show_stat(screen)
+        show_stat(screen, "(ПРОБЕЛ - новая игра, M - музыка on/off)")
         # --------------------------------------------------------
         if (field1.score() == 0 or field2.score() == 0) and gaming:  # --- ЕСТЬ ПОБЕДИТЕЛЬ!!! ---
             add_score(field1.score(), field2.score(), field1.move, field2.move)  # Сохранение итогов игры
@@ -143,19 +135,7 @@ def main():
                         field2.fog = True
                 if event.button == 1:  # Левая кнопка мыши
                     if spr01.check_click(event.pos):  # Кнопка "ЗАНОВО"
-                        load_music(P.music_1, P.M_VOLUME)
-                        # c = True
-                        # while c:
-                        #     for event0 in pygame.event.get():
-                        #         if event0.type == pygame.KEYDOWN:
-                        #             c = False
-                        #     screen.fill('black')
-                        #     clock.tick(FPS)
-                        #     pygame.display.flip()
-                        music_state = change_music(True)
-                        field1.fill(AI().get_coords())
-                        field2.fill(AI().get_coords())
-                        gaming = True
+                        newgame = True
                     elif spr02.check_click(event.pos):  # Кнопка "МУЗЫКА"
                         music_state = change_music(music_state)
                     elif spr03.check_click(event.pos):  # Кнопка "ВЫХОД"
@@ -174,11 +154,31 @@ def main():
                 if event.key == pygame.K_m:
                     music_state = change_music(music_state)
                 if event.key == pygame.K_SPACE:
-                    load_music(P.music_1, P.M_VOLUME)
-                    music_state = change_music(True)
-                    field1.fill(AI().get_coords())
-                    field2.fill(AI().get_coords())
-                    gaming = True
+                    newgame = True
+        if newgame:
+            load_music(P.music_1, P.M_VOLUME)
+            music_state = change_music(True)
+            gaming = False
+            c = True
+            while c:
+                bright = BrightCounter.count(gaming)
+                for event0 in pygame.event.get():
+                    if event0.type == pygame.KEYDOWN:
+                        c = False
+                screen.fill((bright, bright, bright + 20))
+                field1.fill(AI().get_coords())
+                field2.fill(AI().get_coords())
+                field1.fog = False
+                field2.fog = False
+                field1.render(screen)  # Отрисовка игрового поля 1
+                field2.render(screen)  # Отрисовка игрового поля 2
+                show_stat(screen, "Для начала игры - нажмите любую клавишу")
+                clock.tick(FPS // 4)
+                pygame.display.flip()
+            field1.fog = True
+            field2.fog = True
+            gaming = True
+            newgame = False
         # ------ Конец цикла обработки событий -------
 
         cursor_player.move(pygame.mouse.get_pos(), 0)  # Передача координат мыши курсору игрока

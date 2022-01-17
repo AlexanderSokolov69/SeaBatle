@@ -6,6 +6,30 @@ from modules.ingame import *
 from modules.sql_games import *
 
 
+class BrightCounter:
+    step: BR_STEP
+    bright = P.GR_LOW
+
+    @classmethod
+    def count(cls, state):
+        if state:
+            cls.step = BR_STEP
+            if cls.bright < GR_HIGH:
+                cls.bright += BR_STEP
+        else:
+            if cls.bright >= GR_HIGH:
+                cls.step = -2
+            if cls.bright < P.GR_LOW:
+                cls.step = 0
+            cls.bright += cls.step
+        return cls.bright
+
+    @classmethod
+    def reset(cls):
+        cls.bright = P.GR_LOW
+        return cls.bright
+
+
 class Cursor(pygame.sprite.Sprite):
     """
     Класс, реализующий различные курсоры с анимацией
