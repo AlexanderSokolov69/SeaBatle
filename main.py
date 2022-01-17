@@ -1,5 +1,7 @@
 from configparser import ConfigParser
 
+import pygame.event
+
 from modules.ai import AI
 from modules.base import Sea
 from modules.classes import *
@@ -142,6 +144,14 @@ def main():
                 if event.button == 1:  # Левая кнопка мыши
                     if spr01.check_click(event.pos):  # Кнопка "ЗАНОВО"
                         load_music(P.music_1, P.M_VOLUME)
+                        # c = True
+                        # while c:
+                        #     for event0 in pygame.event.get():
+                        #         if event0.type == pygame.KEYDOWN:
+                        #             c = False
+                        #     screen.fill('black')
+                        #     clock.tick(FPS)
+                        #     pygame.display.flip()
                         music_state = change_music(True)
                         field1.fill(AI().get_coords())
                         field2.fill(AI().get_coords())
