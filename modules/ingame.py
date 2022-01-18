@@ -2,6 +2,8 @@ from os import path
 from sys import exit
 from random import randint, choice
 
+import pygame
+
 from modules.const import *
 from modules.sql_games import Table
 
